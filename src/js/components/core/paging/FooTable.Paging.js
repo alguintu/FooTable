@@ -232,6 +232,10 @@
 						}).data('page', attr).html(html));
 				},
 				position;
+				
+			self.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: self }, self._onPageClicked);
+			self.$count = $('<span/>', { 'class': 'label label-default' });
+			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan);
 
 			if (!multiple) return;
 
@@ -240,39 +244,34 @@
 				case 'right': position = 'footable-paging-right'; break;
 				default: position = 'footable-paging-center'; break;
 			}
+
 			self.ft.$el.addClass('footable-paging').addClass(position);
-			self.$cell = $('<td/>').attr('colspan', self.ft.columns.visibleColspan);
 			var $tfoot = self.ft.$el.children('tfoot');
 			if ($tfoot.length == 0){
 				$tfoot = $('<tfoot/>');
 				self.ft.$el.append($tfoot);
 			}
-			self.$row = $('<tr/>', { 'class': 'footable-paging' }).append(self.$cell).appendTo($tfoot);
-			self.$pagination = $('<ul/>', { 'class': 'pagination' }).on('click.footable', 'a.footable-page-link', { self: self }, self._onPageClicked);
-			self.$count = $('<span/>', { 'class': 'label label-default' });
 
+			self.$row = $('<tr/>', { 'class': 'footable-paging' }).append(self.$cell).appendTo($tfoot);
 			self.$pagination.empty();
-			if (multiple) {
-				self.$pagination.append(link('first', self.strings.first, 'footable-page-nav'));
-				self.$pagination.append(link('prev', self.strings.prev, 'footable-page-nav'));
-				if (self.limit > 0 && self.limit < self.total){
-					self.$pagination.append(link('prev-limit', self.strings.prevPages, 'footable-page-nav'));
-				}
+
+			self.$pagination.append(link('first', self.strings.first, 'footable-page-nav'));
+			self.$pagination.append(link('prev', self.strings.prev, 'footable-page-nav'));
+			if (self.limit > 0 && self.limit < self.total){
+				self.$pagination.append(link('prev-limit', self.strings.prevPages, 'footable-page-nav'));
 			}
 			for (var i = 0, $li; i < self.total; i++){
 				$li = link(i + 1, i + 1, 'footable-page');
 				self.$pagination.append($li);
 			}
-			if (multiple){
-				if (self.limit > 0 && self.limit < self.total){
-					self.$pagination.append(link('next-limit', self.strings.nextPages, 'footable-page-nav'));
-				}
-				self.$pagination.append(link('next', self.strings.next, 'footable-page-nav'));
-				self.$pagination.append(link('last', self.strings.last, 'footable-page-nav'));
+			if (self.limit > 0 && self.limit < self.total){
+				self.$pagination.append(link('next-limit', self.strings.nextPages, 'footable-page-nav'));
 			}
-
+			self.$pagination.append(link('next', self.strings.next, 'footable-page-nav'));
+			self.$pagination.append(link('last', self.strings.last, 'footable-page-nav'));
 			self.$cell.append(self.$pagination, $('<div/>', {'class': 'divider'}), self.$count);
 			self._total = self.total;
+
 		},
 
 		/* PUBLIC */
